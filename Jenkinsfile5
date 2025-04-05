@@ -1,0 +1,72 @@
+
+pipeline {
+    agent any
+    tools {
+        maven 'mymaven'
+    }
+    stages {
+        stage("Checkout from GitHub") {
+            steps {
+                git branch: 'master',
+                url: 'https://github.com/saidevops8989/DevOpsClassCodes.git'
+                echo 'Pulled from GitHub successfully'
+            }
+        }
+        stage("Compile the code to executable format") {
+            steps {
+                sh "mvn compile"
+                echo 'Converted the code from human-readable to machine-readable'
+            }
+        }
+        stage("Testing the code") {
+            steps {
+                sh "mvn test"
+                echo 'Run and execute the test cases'
+            }
+        }
+        stage("Code review to check quality of code") {
+            steps {
+                sh "mvn pmd:pmd"
+                echo 'Code review done'
+            }
+        }
+        stage("Convert the code to package") {
+            steps {
+                sh "mvn package"
+                echo 'Convert the files to WAR file'
+            }
+        }
+        stage("Docker Build") {
+            steps {
+                sh "docker build -t my-tomcat-app ."
+                echo 'Docker image built successfully'
+            }
+        }
+        //  stage("Docker Run") {
+        //    steps {
+        //      sh "docker run -d -p 7080:8080 my-tomcat-app"
+        //    echo 'Docker container started successfully'
+        //  }
+        //}
+        stage("Push to Docker Hub") {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                    sh "docker tag my-tomcat-app:latest devopsstuff09/devops2:latest"
+                    sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
+                    sh "docker push devopsstuff09/devops2:latest"
+                    echo 'Docker image pushed to Docker Hub successfully'
+                }
+            }
+        }
+        stage("Deploy to Kubernetes") {
+            steps {
+                
+                    withKubeConfig([credentialsId: 'kubernetes-credentials', serverUrl: 'https://192.168.12.164:6443']) {
+    //                    sh 'kubectl apply -f deployment.yaml'
+                        sh 'kubectl get pods'
+                    }
+                
+            }
+        }
+    }
+}
