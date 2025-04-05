@@ -5,7 +5,7 @@ FROM tomcat:9-jdk8
 COPY target/*.war /usr/local/tomcat/webapps/
 
 # Expose the Tomcat port
-EXPOSE 8080
+EXPOSE 8081
 
 # Set the default command to run when the container starts
 CMD ["catalina.sh", "run"]
