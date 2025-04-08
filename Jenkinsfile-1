@@ -71,7 +71,7 @@ pipeline {
                 echo 'Pushing image to Docker Hub...'
                 withCredentials([usernamePassword(credentialsId: 'DOCKER_HUB_CREDENTIALS', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh """
-                        echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
+                        echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
                         docker tag gameliafrica7/tomcat-jar:latest ${DOCKER_USERNAME}/tomcat-jar:latest
                         docker push ${DOCKER_USERNAME}/tomcat-jar:latest
                     """
