@@ -71,9 +71,9 @@ pipeline {
                         docker tag gameliafrica7/tomcat-jar:latest ${DOCKER_USERNAME}/tomcat-jar:latest
                         docker push ${DOCKER_USERNAME}/tomcat-jar:latest
                     """
-                {}
-            {}
-        {}
-    {}
+                }
+            }
+        }
+    }
 {}
 
