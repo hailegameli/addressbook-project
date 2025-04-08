@@ -79,7 +79,7 @@ pipeline {
             }
         }
 
-         stage {
+        stage {
 	     steps {
 		 echo 'Deploying to Google Cloud...'
                  withCredentials([file(credentialsId: 'GCLOUD_SERVICE_KEY', variable: 'GCLOUD_KEY')]) {
