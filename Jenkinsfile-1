@@ -55,7 +55,7 @@ pipeline {
         stage("Build Docker Image") {
             steps {
                 echo 'Building Docker image...'
-                sh 'docker build -t gameliafrica7/tomcat-jar .'
+                sh 'docker build -t gameliafrica7/tomcat-jar '
             }
         }
 
