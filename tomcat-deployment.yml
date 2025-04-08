@@ -1,0 +1,22 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: web-app
+  namespace: default
+  labels:
+    app: web-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      containers:
+      - name: web-app
+        image: "gameliafrica7/tomcat-jar:latest"
+        ports:
+          - containerPort: 8080
