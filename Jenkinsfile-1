@@ -1,0 +1,76 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'mymaven'
+    }
+
+    stages {
+        stage("Clone from GitHub") {
+            steps {
+                echo 'Cloning from GitHub...'
+                git url: 'https://github.com/hailegameli/hostel_reservation.git',
+                    branch: 'master',
+                    credentialsId: 'GITHUB_CREDENTIALS'
+            }
+        }
+
+        stage("Compiling Code") {
+            steps {
+                echo 'Compiling...'
+                sh 'mvn compile'
+            }
+        }
+
+        stage("Testing Code") {
+            steps {
+                echo 'Testing...'
+                sh 'mvn test'
+            }
+            post {
+                success {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
+        }
+
+        stage("Code Review") {
+            steps {
+                echo 'Running PMD code analysis...'
+                sh 'mvn pmd:pmd'
+            }
+        }
+
+        stage("Packaging Code") {
+            steps {
+                echo 'Packaging WAR file...'
+                sh 'mvn package'
+            }
+        }
+
+        stage("Build Docker Image") {
+            steps {
+                echo 'Building Docker image...'
+                sh 'docker build -t gameliafrica7/tomcat-jar .'
+            }
+        }
+
+        stage("Run Docker Container") {
+            steps {
+                echo 'Running container from image...'
+                sh 'docker run -d -p 7071:8080 gameliafrica7/tomcat-jar'
+            }
+        }
+
+        stage("Push to Docker Hub") {
+            steps {
+                echo 'Pushing image to Docker Hub...'
+                withCredentials([usernamePassword(credentialsId: 'DOCKER_HUB_CREDENTIALS', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh """
+                        echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
+                        docker tag gameliafrica7/tomcat-jar:latest ${DOCKER_USERNAME}/tomcat-jar:latest
+                        docker push ${DOCKER_USERNAME}/tomcat-jar:latest
+                    """
+                }
+            }
+        }
