@@ -62,7 +62,7 @@ pipeline {
         stage("Run Docker Container") {
             steps {
                 echo 'Running container from image...'
-                sh 'docker run -d -p 7071:8080 gameliafrica7/tomcat-jar'
+                sh 'docker run -d -p 7070:8080 gameliafrica7/tomcat-jar'
             }
         }
 
@@ -80,12 +80,16 @@ pipeline {
         }
     
         stage("Deploy to EKS-Cluster") {
-             steps {
-                 echo 'Deploying to EKS-Cluster...'
-                 sh 'aws eks update-kubeconfig --name eksdemo1 --region us-east-1'
-                 sh 'kubectl get ns'
-                 sh 'kubectl apply -f tomcat-deployment.yml'
-             }
+            steps {
+		echo 'Deploying to EKS-Cluster...'
+                withCredentials([usernamePassword(credentialsId: 'AWS_CREDENTIALS', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                   sh '''
+                      export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+                      export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+                      aws eks update-kubeconfig --name eksdemo1 --region us-east-1
+                    '''
+                }
+            }
         }
     }
 } 
