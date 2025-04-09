@@ -82,9 +82,9 @@ pipeline {
         stage("Deploy to Google Cloud") { 
 	    steps {
 		 echo 'Deploying to Google Cloud...'
-                 withCredentials([file(credentialsId: 'GCLOUD_SERVICE_KEY', variable: 'GCLOUD_KEY')]) {
+                 withCredentials([file(credentialsId: 'GCLOUD_SERVICE_KEY', variable: 'GCLOUD_CREDENTIALS')]) {
                     sh '''
-                      gcloud auth activate-service-account --key-file=$GCLOUD_KEY
+                      gcloud auth activate-service-account --key-file=$GCLOUD_CREDENTIALS
                       gcloud config set project YOUR_PROJECT_ID
                       gcloud container clusters get-credentials test-cluster --zone us-central1-c
                       kubectl apply -f tomcat-deployment.yml
