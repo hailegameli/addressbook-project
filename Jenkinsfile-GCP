@@ -82,7 +82,7 @@ pipeline {
         stage("Deploy to Google Cloud") { 
 	    steps {
 		 echo 'Deploying to Google Cloud...'
-                 withCredentials([file(credentialsId: 'GCLOUD_SERVICE_KEY', variable: 'GCLOUD_CREDENTIALS')]) {
+                 withCredentials([file(credentialsId: 'GCLOUD_KEY', variable: 'GCLOUD_CREDENTIALS')]) {
                     sh '''
                       gcloud auth activate-service-account --key-file=$GCLOUD_CREDENTIALS
                       gcloud config set project YOUR_PROJECT_ID
