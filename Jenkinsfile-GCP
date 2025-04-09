@@ -85,7 +85,7 @@ pipeline {
                  withCredentials([file(credentialsId: 'GCLOUD_KEY', variable: 'GCLOUD_CREDENTIALS')]) {
                     sh '''
                       gcloud auth activate-service-account --key-file=$GCLOUD_CREDENTIALS
-                      gcloud config set project YOUR_PROJECT_ID
+                      gcloud config set project upheld-cosmos-437821-h9
                       gcloud container clusters get-credentials test-cluster --zone us-central1-c
                       kubectl apply -f tomcat-deployment.yml
                     '''
