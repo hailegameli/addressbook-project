@@ -62,7 +62,7 @@ pipeline {
         stage("Run Docker Container") {
             steps {
                 echo 'Running container from image...'
-                sh 'docker run -d -p 7082:8080 gameliafrica7/tomcat-jar'
+                sh 'docker run -d -p 7092:8080 gameliafrica7/tomcat-jar'
             }
         }
 
